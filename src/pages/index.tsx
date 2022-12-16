@@ -9,18 +9,22 @@ import { useState } from "react";
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
   const [message, setMessage] = useState("");
-  const ctx = trpc.useContext();
+  const utils = trpc.useContext();
   const postMessage = trpc.guestbook.postMessage.useMutation({
-    onMutate: async () => {
-      await ctx.guestbook.getAll.cancel();
+    async onMutate(newPost) {
+      await utils.guestbook.getAll.cancel();
 
-      let optimisticUpdate = ctx.guestbook.getAll.getData();
-      if (optimisticUpdate) {
-        ctx.guestbook.getAll.setData(optimisticUpdate);
-      }
+      const prevData = utils.guestbook.getAll.getData();
+
+      utils.guestbook.getAll.setData(undefined, (old) => [
+        ...(old || []),
+        newPost,
+      ]);
+
+      return { prevData };
     },
-    onSettled: () => {
-      ctx.guestbook.getAll.invalidate();
+    onSettled() {
+      utils.guestbook.getAll.invalidate();
     },
   });
 
