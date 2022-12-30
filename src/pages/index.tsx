@@ -1,10 +1,9 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
@@ -44,12 +43,27 @@ const Home: NextPage = () => {
         <p>
           Tutorial for <code>create-t3-app</code>
         </p>
+        <Link href="/admin">
+          <p className="m-4 rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600">
+            admin page
+          </p>
+        </Link>
+        <Link href="/products">
+          <p className="m-4 rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600">
+            Products
+          </p>
+        </Link>
 
         {session ? (
           <div>
             <p>hi {session.user?.name}</p>
 
-            <button onClick={() => signOut()}>Logout</button>
+            <button
+              className="m-4 rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
+              onClick={() => signOut()}
+            >
+              Logout
+            </button>
 
             <div className="pt-6">
               <form
@@ -71,7 +85,7 @@ const Home: NextPage = () => {
                   placeholder="Your message..."
                   maxLength={100}
                   onChange={(event) => setMessage(event.target.value)}
-                  className="rounded-md border-2 border-zinc-800 bg-neutral-900 px-4 py-2 focus:outline-none"
+                  className="rounded-md border-2 border-zinc-300 bg-neutral-200 px-4 py-2 focus:outline-none"
                 />
                 <button
                   type="submit"
@@ -88,7 +102,10 @@ const Home: NextPage = () => {
           </div>
         ) : (
           <div>
-            <button onClick={() => signIn("discord")}>
+            <button
+              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
+              onClick={() => signIn("discord")}
+            >
               Login with Discord
             </button>
             <div className="pt-10" />
