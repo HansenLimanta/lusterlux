@@ -1,16 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
 }
 
@@ -57,6 +50,12 @@ model User {
   sessions      Session[]
   cart          CartItem[]
   orders        Order[]
+  role          Role      @default(USER)
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model VerificationToken {
@@ -82,7 +81,7 @@ model Product {
     image     String? 
     description String?
     stock     Int
-    cartItem  CartItem?
+    cartItem  CartItem[]
 }
 
 model Order {
@@ -119,7 +118,7 @@ model  CartItem  {
     quantity  Int
     price     Int
     total     Int
-    productId String   @unique
+    productId String   
     product   Product  @relation(fields: [productId], references: [id])
     userId    String
     user      User     @relation(fields: [userId], references: [id])

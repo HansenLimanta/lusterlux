@@ -57,6 +57,11 @@ const Home: NextPage = () => {
         {session ? (
           <div>
             <p>hi {session.user?.name}</p>
+            <img
+              src={session.user?.image as string}
+              alt="user profile"
+              referrerPolicy="no-referrer"
+            />
 
             <button
               className="m-4 rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
@@ -107,6 +112,12 @@ const Home: NextPage = () => {
               onClick={() => signIn("discord")}
             >
               Login with Discord
+            </button>
+            <button
+              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
+              onClick={() => signIn("google")}
+            >
+              Login with Google
             </button>
             <div className="pt-10" />
             <Messages />
