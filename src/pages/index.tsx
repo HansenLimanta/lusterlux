@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useState } from "react";
 import Link from "next/link";
@@ -107,24 +107,11 @@ const Home: NextPage = () => {
           </div>
         ) : (
           <div>
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
-              onClick={() => signIn("discord")}
-            >
-              Login with Discord
-            </button>
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
-              onClick={() => signIn("google")}
-            >
-              Login with Google
-            </button>
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
-              onClick={() => signIn("instagram")}
-            >
-              Login with Instagram
-            </button>
+            <Link href="/login">
+              <p className="m-4 rounded-lg border border-black py-2 text-center hover:border-emerald-600 hover:text-emerald-600">
+                Login
+              </p>
+            </Link>
             <div className="pt-10" />
             <Messages />
           </div>
