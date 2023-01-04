@@ -119,6 +119,12 @@ const Home: NextPage = () => {
             >
               Login with Google
             </button>
+            <button
+              className="rounded-lg border border-black px-2 py-1 hover:border-emerald-600 hover:text-emerald-600"
+              onClick={() => signIn("instagram")}
+            >
+              Login with Instagram
+            </button>
             <div className="pt-10" />
             <Messages />
           </div>
