@@ -1,12 +1,15 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { atom } from "jotai";
 
 import { trpc } from "../utils/trpc";
-
-import "../styles/globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import "../styles/globals.css";
+
+export const isLoggedAtom = atom(false);
+export const userIdAtom = atom("");
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

@@ -50,13 +50,9 @@ model User {
   sessions      Session[]
   cart          CartItem[]
   orders        Order[]
-  role          Role      @default(USER)
+  role          String    @default("USER")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
 
 model VerificationToken {
   identifier String

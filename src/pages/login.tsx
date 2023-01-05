@@ -1,19 +1,25 @@
-import { type NextPage } from "next";
-import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { useAtom } from "jotai";
+import { isLoggedAtom } from "./_app";
 import Meta from "../components/Meta";
 
 const LoginPage: NextPage = () => {
-  const { data: session } = useSession();
   const router = useRouter();
+  const [isLogged] = useAtom(isLoggedAtom);
+
+  const handleLogin = (provider: string) => {
+    signIn(provider, { callbackUrl: "/" });
+  };
 
   useEffect(() => {
-    if (session) {
+    if (isLogged) {
       router.push("/");
     }
-  }, [session]);
+  }, [isLogged]);
 
   return (
     <>
@@ -24,21 +30,21 @@ const LoginPage: NextPage = () => {
         <div className="mt-10 flex w-80 flex-col gap-6">
           <button
             className="flex items-center justify-center gap-2 rounded-lg border border-black py-2 hover:border-emerald-600 hover:text-emerald-600"
-            onClick={() => signIn("discord", { callbackUrl: "/" })}
+            onClick={() => handleLogin("discord")}
           >
             <Image src="/discord.png" width={24} height={24} alt="discord" />
             Login with Discord
           </button>
           <button
             className="flex items-center justify-center gap-2 rounded-lg border border-black py-2 hover:border-emerald-600 hover:text-emerald-600 "
-            onClick={() => signIn("google", { callbackUrl: "/" })}
+            onClick={() => handleLogin("google")}
           >
             <Image src="/google.png" width={24} height={24} alt="google" />
             Login with Google
           </button>
           <button
             className="flex items-center justify-center gap-2 rounded-lg border border-black py-2 hover:border-emerald-600 hover:text-emerald-600"
-            onClick={() => signIn("instagram", { callbackUrl: "/" })}
+            onClick={() => handleLogin("github")}
           >
             <Image
               src="/instagram.png"
