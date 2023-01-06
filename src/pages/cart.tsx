@@ -2,18 +2,23 @@ import { useEffect } from "react";
 import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { isLoggedAtom, userIdAtom } from "./_app";
+import { sessionStatusAtom, userIdAtom } from "./_app";
 import { trpc } from "../utils/trpc";
 import Meta from "../components/Meta";
 
 const CartPage: NextPage = () => {
-  const [isLogged] = useAtom(isLoggedAtom);
+  const [sessionStatus] = useAtom(sessionStatusAtom);
   const [userId] = useAtom(userIdAtom);
 
   const utils = trpc.useContext();
   const router = useRouter();
   const { data: cartItem, status } = trpc.cart.getCartItems.useQuery({
     id: userId,
+  });
+  const deleteSingleCartItem = trpc.cart.deleteSingleCartItem.useMutation({
+    onSuccess: () => {
+      utils.cart.getCartItems.invalidate();
+    },
   });
   const deleteCartItem = trpc.cart.deleteCartItem.useMutation({
     onSuccess: () => {
@@ -27,10 +32,13 @@ const CartPage: NextPage = () => {
   });
 
   useEffect(() => {
-    if (!isLogged) {
-      router.push("/");
+    if (sessionStatus.isLoading) {
+      return;
     }
-  }, [isLogged]);
+    if (!sessionStatus.isLogged) {
+      router.push("/login");
+    }
+  }, [sessionStatus]);
 
   if (status === "loading")
     return (
@@ -60,7 +68,7 @@ const CartPage: NextPage = () => {
                   <button
                     className="w-8 rounded-md border border-emerald-700 bg-white"
                     onClick={() => {
-                      deleteCartItem.mutate({
+                      deleteSingleCartItem.mutate({
                         id,
                       });
                     }}

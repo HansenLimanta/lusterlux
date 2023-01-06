@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { router, protectedProcedure, publicProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 
 export const cartRouter = router({
-  addCartItem: publicProcedure
+  addCartItem: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -48,7 +48,7 @@ export const cartRouter = router({
         console.log(error);
       }
     }),
-  deleteCartItem: publicProcedure
+  deleteSingleCartItem: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -83,7 +83,24 @@ export const cartRouter = router({
         console.log(error);
       }
     }),
-  getCartItems: publicProcedure
+  deleteCartItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.prisma.cartItem.delete({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }),
+  getCartItems: protectedProcedure
     .input(
       z.object({
         id: z.string(),

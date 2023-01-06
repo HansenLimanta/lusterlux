@@ -4,22 +4,25 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useAtom } from "jotai";
-import { isLoggedAtom } from "./_app";
+import { sessionStatusAtom } from "./_app";
 import Meta from "../components/Meta";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
-  const [isLogged] = useAtom(isLoggedAtom);
+  const [sessionStatus] = useAtom(sessionStatusAtom);
 
   const handleLogin = (provider: string) => {
     signIn(provider, { callbackUrl: "/" });
   };
 
   useEffect(() => {
-    if (isLogged) {
+    if (sessionStatus.isLoading) {
+      return;
+    }
+    if (sessionStatus.isLogged) {
       router.push("/");
     }
-  }, [isLogged]);
+  }, [sessionStatus]);
 
   return (
     <>
