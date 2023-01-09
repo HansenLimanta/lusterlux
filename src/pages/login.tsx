@@ -1,28 +1,13 @@
-import { useEffect } from "react";
-import { type NextPage } from "next";
-import { useRouter } from "next/router";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
-import { useAtom } from "jotai";
-import { sessionStatusAtom } from "./_app";
 import Meta from "../components/Meta";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
 
 const LoginPage: NextPage = () => {
-  const router = useRouter();
-  const [sessionStatus] = useAtom(sessionStatusAtom);
-
   const handleLogin = (provider: string) => {
     signIn(provider, { callbackUrl: "/" });
   };
-
-  useEffect(() => {
-    if (sessionStatus.isLoading) {
-      return;
-    }
-    if (sessionStatus.isLogged) {
-      router.push("/");
-    }
-  }, [sessionStatus]);
 
   return (
     <>
@@ -65,3 +50,19 @@ const LoginPage: NextPage = () => {
 };
 
 export default LoginPage;
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

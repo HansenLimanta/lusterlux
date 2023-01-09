@@ -1,10 +1,12 @@
-import { type NextPage } from "next";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import Link from "next/link";
 import { trpc } from "../../../utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Meta from "../../../components/Meta";
+import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
+import { role } from "../../../utils/constant";
 
 type Inputs = {
   name: string;
@@ -104,3 +106,19 @@ const EditProduct: NextPage = () => {
 };
 
 export default EditProduct;
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  if (session?.user?.role !== role.admin) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

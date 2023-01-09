@@ -1,19 +1,16 @@
-import { useEffect } from "react";
-import { type NextPage } from "next";
-import { useRouter } from "next/router";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import { useAtom } from "jotai";
-import { sessionStatusAtom, userIdAtom } from "./_app";
+import { userAtom } from "./_app";
 import { trpc } from "../utils/trpc";
 import Meta from "../components/Meta";
+import { getServerAuthSession } from "../server/common/get-server-auth-session";
+import { role } from "../utils/constant";
 
 const CartPage: NextPage = () => {
-  const [sessionStatus] = useAtom(sessionStatusAtom);
-  const [userId] = useAtom(userIdAtom);
-
+  const [userId] = useAtom(userAtom);
   const utils = trpc.useContext();
-  const router = useRouter();
   const { data: cartItem, status } = trpc.cart.getCartItems.useQuery({
-    id: userId,
+    id: userId.userId,
   });
   const deleteSingleCartItem = trpc.cart.deleteSingleCartItem.useMutation({
     onSuccess: () => {
@@ -30,15 +27,6 @@ const CartPage: NextPage = () => {
       utils.cart.getCartItems.invalidate();
     },
   });
-
-  useEffect(() => {
-    if (sessionStatus.isLoading) {
-      return;
-    }
-    if (!sessionStatus.isLogged) {
-      router.push("/login");
-    }
-  }, [sessionStatus]);
 
   if (status === "loading")
     return (
@@ -112,3 +100,19 @@ const CartPage: NextPage = () => {
 };
 
 export default CartPage;
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  if (!session || session.user?.role === role.admin) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

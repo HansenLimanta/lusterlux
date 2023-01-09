@@ -8,8 +8,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/globals.css";
 
-export const sessionStatusAtom = atom({ isLogged: false, isLoading: true });
-export const userIdAtom = atom("");
+export const userAtom = atom({ userId: "", role: "" });
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

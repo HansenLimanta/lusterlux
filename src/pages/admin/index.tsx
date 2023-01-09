@@ -1,7 +1,9 @@
-import { type NextPage } from "next";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import Link from "next/link";
 import Meta from "../../components/Meta";
 import { trpc } from "../../utils/trpc";
+import { role } from "../../utils/constant";
+import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 
 const AdminPage: NextPage = () => {
   return (
@@ -72,3 +74,19 @@ const Products = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  if (session?.user?.role !== role.admin) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

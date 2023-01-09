@@ -3,10 +3,10 @@ import { trpc } from "../utils/trpc";
 import Link from "next/link";
 import Meta from "../components/Meta";
 import { useAtom } from "jotai";
-import { userIdAtom } from "./_app";
+import { userAtom } from "./_app";
 
 const ProductsPage: NextPage = () => {
-  const [userId] = useAtom(userIdAtom);
+  const [userId] = useAtom(userAtom);
   const { data: products, isLoading } = trpc.products.getProducts.useQuery();
   const utils = trpc.useContext();
   const addToCart = trpc.cart.addCartItem.useMutation({
@@ -42,7 +42,7 @@ const ProductsPage: NextPage = () => {
                 className="w-32 rounded-md border border-emerald-700 bg-white p-1"
                 onClick={() => {
                   addToCart.mutate({
-                    userId: userId,
+                    userId: userId.userId,
                     productId: id,
                     quantity: 1,
                     name,
