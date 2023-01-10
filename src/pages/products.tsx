@@ -4,9 +4,10 @@ import Link from "next/link";
 import Meta from "../components/Meta";
 import { useAtom } from "jotai";
 import { userAtom } from "./_app";
+import ProductItem from "../components/ProductItem";
 
 const ProductsPage: NextPage = () => {
-  const [userId] = useAtom(userAtom);
+  const [user] = useAtom(userAtom);
   const { data: products, isLoading } = trpc.products.getProducts.useQuery();
   const utils = trpc.useContext();
   const addToCart = trpc.cart.addCartItem.useMutation({
@@ -14,6 +15,16 @@ const ProductsPage: NextPage = () => {
       utils.cart.getCartItems.invalidate();
     },
   });
+
+  const handleAddProduct = (
+    userId: string,
+    productId: string,
+    quantity: number,
+    name: string,
+    price: number
+  ) => {
+    addToCart.mutate({ userId, productId, quantity, name, price });
+  };
 
   if (isLoading) return <div>Fetching products...</div>;
 
@@ -28,31 +39,13 @@ const ProductsPage: NextPage = () => {
           </p>
         </Link>
         {products?.map((product, index) => {
-          const { name, price, stock, id } = product;
-
           return (
-            <div
+            <ProductItem
               key={index}
-              className="mt-3 grid grid-cols-4 place-items-center rounded-md bg-stone-200 px-4 py-2"
-            >
-              <p>{name}</p>
-              <p>{price}</p>
-              <p>{stock}</p>
-              <button
-                className="w-32 rounded-md border border-emerald-700 bg-white p-1"
-                onClick={() => {
-                  addToCart.mutate({
-                    userId: userId.userId,
-                    productId: id,
-                    quantity: 1,
-                    name,
-                    price,
-                  });
-                }}
-              >
-                Add to Cart
-              </button>
-            </div>
+              userId={user.userId}
+              product={product}
+              handleAddProduct={handleAddProduct}
+            />
           );
         })}
       </main>

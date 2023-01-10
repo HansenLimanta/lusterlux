@@ -12,7 +12,7 @@ const Footer: FC = () => {
         <p>&copy;2023 Lusterlux. All Right Reserved</p>
       </div>
       <div className="flex flex-col">
-        <Link className="hover:text-emerald-600" href="/home">
+        <Link className="hover:text-emerald-600" href="/">
           Home
         </Link>
         <Link className="hover:text-emerald-600" href="/products">
