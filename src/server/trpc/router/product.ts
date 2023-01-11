@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { router, protectedProcedure, publicProcedure } from "../trpc";
+import { router, publicProcedure, adminProcedure } from "../trpc";
 
 export const productRouter = router({
-  addProduct: publicProcedure
+  addProduct: adminProcedure
     .input(
       z.object({
         name: z.string(),
@@ -26,7 +26,7 @@ export const productRouter = router({
         console.log(error);
       }
     }),
-  editProduct: publicProcedure
+  editProduct: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -53,7 +53,7 @@ export const productRouter = router({
         console.log(error);
       }
     }),
-  deleteProduct: publicProcedure
+  deleteProduct: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -73,7 +73,7 @@ export const productRouter = router({
       },
     });
   }),
-  getProduct: publicProcedure
+  getProduct: adminProcedure
     .input(
       z.object({
         id: z.string(),

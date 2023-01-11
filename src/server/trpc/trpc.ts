@@ -1,5 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
+import { role } from "../../utils/constant";
 
 import { type Context } from "./context";
 
@@ -33,7 +34,21 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const isAdmin = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  } else if (ctx.session.user.role !== role.admin) {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
 /**
  * Protected procedure
  **/
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const adminProcedure = t.procedure.use(isAdmin);

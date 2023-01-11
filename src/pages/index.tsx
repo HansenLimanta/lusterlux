@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext, type NextPage } from "next";
 import Link from "next/link";
+import FAQ from "../components/FAQ";
 import Meta from "../components/Meta";
 import { getServerAuthSession } from "../server/common/get-server-auth-session";
 import { role } from "../utils/constant";
@@ -20,6 +21,7 @@ const HomePage: NextPage = () => {
             Products
           </p>
         </Link>
+        <FAQ />
       </main>
     </>
   );

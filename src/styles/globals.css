@@ -5,3 +5,7 @@
 body {
   @apply bg-neutral-100 text-neutral-900;
 }
+
+.AccordionTrigger[data-state="open"] > .AccordionChevron {
+  transform: rotate(180deg);
+}
