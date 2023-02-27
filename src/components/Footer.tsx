@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Footer: FC = () => {
   return (
-    <footer className="flex items-center justify-between bg-white py-6 px-4 dark:bg-gray-900 md:px-20 xl:px-40">
+    <footer className="flex items-center justify-between bg-gray-600 py-6 px-4 text-white dark:bg-gray-900 md:px-20 xl:px-40">
       <div className="flex flex-col">
         <p>(+62) 822-2516-9086</p>
         <p>Instagram: @peachygirlstore</p>

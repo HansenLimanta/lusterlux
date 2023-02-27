@@ -5,28 +5,24 @@ import Meta from "../components/Meta";
 import { useAtom } from "jotai";
 import { userAtom } from "./_app";
 import ProductItem from "../components/ProductItem";
+import { useState } from "react";
 
 const ProductsPage: NextPage = () => {
+  const [needLogin, setNeedLogin] = useState(false);
   const [user] = useAtom(userAtom);
   const { data: products, isLoading } = trpc.products.getProducts.useQuery();
-  const utils = trpc.useContext();
-  const addToCart = trpc.cart.addCartItem.useMutation({
-    onSuccess: () => {
-      utils.cart.getCartItems.invalidate();
-    },
-  });
-
-  const handleAddProduct = (
-    userId: string,
-    productId: string,
-    quantity: number,
-    name: string,
-    price: number
-  ) => {
-    addToCart.mutate({ userId, productId, quantity, name, price });
+  const handleNeedToLogin = () => {
+    setNeedLogin(true);
   };
 
-  if (isLoading) return <div>Fetching products...</div>;
+  if (isLoading)
+    return (
+      <div className="flex h-80 w-screen items-center justify-center ">
+        <div className="animate-pulse rounded-full bg-emerald-200 px-5 py-3 text-center text-base font-medium leading-none text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+          loading...
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -44,10 +40,25 @@ const ProductsPage: NextPage = () => {
               key={index}
               userId={user.userId}
               product={product}
-              handleAddProduct={handleAddProduct}
+              handleNeedToLogin={handleNeedToLogin}
             />
           );
         })}
+        {needLogin ? (
+          <div className="fixed top-1/2 left-1/2 flex h-28 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-3xl border-2 border-black bg-slate-100">
+            <p className="px-8 font-medium text-red-600">
+              YOU NEED TO LOGIN FIRST
+            </p>
+            <button
+              className="mt-2 rounded-md border border-black bg-white px-2"
+              onClick={() => setNeedLogin(false)}
+            >
+              close
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
       </main>
     </>
   );
