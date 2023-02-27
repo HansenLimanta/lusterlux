@@ -10,7 +10,7 @@ type ProductItemProps = {
     id: string;
   };
   userId: string;
-  handleNeedToLogin: Function;
+  handleNeedToLogin: () => void;
 };
 
 const ProductItem: FC<ProductItemProps> = ({
